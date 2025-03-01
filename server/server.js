@@ -4,15 +4,10 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-// Настройка CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-
-// Статические файлы из папки client
-app.use(express.static(path.join(__dirname, '../client')));
+// Корректный путь к папке client
+const staticPath = path.join(__dirname, '../client');
+console.log('Static path:', staticPath); // Отладка пути
+app.use(express.static(staticPath));
 
 const DB_FILE = 'users.json';
 
@@ -81,7 +76,14 @@ app.post('/update-user', (req, res) => {
 
 // Отдача index.html для всех остальных запросов
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client', 'index.html'));
+    const indexPath = path.join(__dirname, '../client', 'index.html');
+    console.log('Serving index.html from:', indexPath); // Отладка пути
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            console.error('Error serving index.html:', err);
+            res.status(500).send('Server error');
+        }
+    });
 });
 
 // Запуск на динамическом порту Render
