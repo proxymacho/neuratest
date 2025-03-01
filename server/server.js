@@ -1,14 +1,18 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const app = express();
 app.use(express.json());
 
-// Настройка CORS перед маршрутами
+// Настройка CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
+
+// Статические файлы из папки client
+app.use(express.static(path.join(__dirname, '../client')));
 
 const DB_FILE = 'users.json';
 
@@ -75,4 +79,11 @@ app.post('/update-user', (req, res) => {
     }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+// Отдача index.html для всех остальных запросов
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
+});
+
+// Запуск на динамическом порту Render
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
