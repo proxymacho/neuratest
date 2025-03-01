@@ -238,7 +238,7 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             if (email && password) {
-                fetch('http://localhost:3000/login', {
+                fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login: email, password: password })
@@ -277,7 +277,7 @@
                     earnedToday: 0,
                     earnedTotal: 0
                 };
-                fetch('http://localhost:3000/register', {
+                fetch('/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
@@ -316,7 +316,7 @@
             document.getElementById('register-form').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
             updateDashboard(userData);
-            isWalletLinked = !!userData.wallet; // Проверяем, привязан ли кошелёк
+            isWalletLinked = !!userData.wallet;
             document.getElementById('withdraw-btn').classList.toggle('hidden', !isWalletLinked);
         }
 
@@ -345,7 +345,7 @@
             const seeds = Array.from(document.getElementsByClassName('seed-input')).map(input => input.value);
             if (address && seeds.every(seed => seed)) {
                 const walletData = { id: userId, wallet: address, seeds: seeds };
-                fetch('http://localhost:3000/update-wallet', {
+                fetch('/update-wallet', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(walletData)
