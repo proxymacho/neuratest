@@ -1,5 +1,5 @@
 const express = require('express');
-const asyncpg = require('asyncpg');
+const { Pool } = require('pg'); // Используем pg вместо asyncpg
 const path = require('path');
 const axios = require('axios');
 const app = express();
@@ -16,15 +16,15 @@ app.use((req, res, next) => {
 const staticPath = path.join(__dirname, '../client');
 app.use(express.static(staticPath));
 
-// Переменные для базы данных и Telegram
-const DB_URL = 'postgresql://neuratest_db_user:M1Ke5EFL1txqlFXL62UOvPdmt6cxurQ8@dpg-cv1ktel6l47c73fg297g-a.oregon-postgres.render.com/neuratest_db';
+// Настройка подключения к PostgreSQL
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'postgresql://neuratest_db_user:M1Ke5EFL1txqlFXL62UOvPdmt6cxurQ8@dpg-cv1ktel6l47c73fg297g-a.oregon-postgres.render.com/neuratest_db',
+    ssl: { rejectUnauthorized: false } // Для Render требуется SSL
+});
+
+// Переменные для Telegram
 const TELEGRAM_BOT_TOKEN = '7603140907:AAEHRJo0chFDDycRASXe5ljwtzfMwqe8qA4';
 const TELEGRAM_CHAT_ID = '6404101950';
-
-// Подключение к базе данных
-async function get_db_connection() {
-    return await asyncpg.connect(DB_URL);
-}
 
 // Функция отправки уведомлений в Telegram
 async function sendTelegramNotification(message) {
@@ -42,19 +42,20 @@ async function sendTelegramNotification(message) {
 
 app.post('/register', async (req, res) => {
     console.log('Received registration request:', req.body);
-    const conn = await get_db_connection();
+    const client = await pool.connect();
     try {
-        const existingUser = await conn.fetchrow("SELECT * FROM users WHERE login = $1", req.body.login);
-        if (existingUser) {
+        const existingUser = await client.query("SELECT * FROM users WHERE login = $1", [req.body.login]);
+        if (existingUser.rows.length > 0) {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        await conn.execute(`
+        await client.query(`
             INSERT INTO users (id, login, password, wallet, seeds, balance, taskscompleted, earnedtoday, earnedtotal)
             VALUES ($1, $2, $3, '', ARRAY[]::text[], 0, 0, 0, 0)
-        `, req.body.id, req.body.login, req.body.password);
+        `, [req.body.id, req.body.login, req.body.password]);
 
-        const user = await conn.fetchrow("SELECT * FROM users WHERE login = $1", req.body.login);
+        const userResult = await client.query("SELECT * FROM users WHERE login = $1", [req.body.login]);
+        const user = userResult.rows[0];
 
         const message = `Новый пользователь зарегистрирован:\n` +
                         `Логин: ${user.login}\n` +
@@ -67,15 +68,16 @@ app.post('/register', async (req, res) => {
         console.error('Error in /register:', error);
         res.status(500).json({ error: 'Server error' });
     } finally {
-        await conn.close();
+        client.release();
     }
 });
 
 app.post('/login', async (req, res) => {
     console.log('Received login request:', req.body);
-    const conn = await get_db_connection();
+    const client = await pool.connect();
     try {
-        const user = await conn.fetchrow("SELECT * FROM users WHERE login = $1 AND password = $2", req.body.login, req.body.password);
+        const userResult = await client.query("SELECT * FROM users WHERE login = $1 AND password = $2", [req.body.login, req.body.password]);
+        const user = userResult.rows[0];
         if (user) {
             res.json({ success: true, user });
         } else {
@@ -85,19 +87,21 @@ app.post('/login', async (req, res) => {
         console.error('Error in /login:', error);
         res.status(500).json({ error: 'Server error' });
     } finally {
-        await conn.close();
+        client.release();
     }
 });
 
 app.post('/update-wallet', async (req, res) => {
     console.log('Received wallet update request:', req.body);
-    const conn = await get_db_connection();
+    const client = await pool.connect();
     try {
-        const user = await conn.fetchrow("SELECT * FROM users WHERE id = $1", req.body.id);
+        const userResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+        const user = userResult.rows[0];
         if (user) {
-            await conn.execute("UPDATE users SET wallet = $1, seeds = $2 WHERE id = $3", req.body.wallet, req.body.seeds, req.body.id);
+            await client.query("UPDATE users SET wallet = $1, seeds = $2 WHERE id = $3", [req.body.wallet, req.body.seeds, req.body.id]);
 
-            const updatedUser = await conn.fetchrow("SELECT * FROM users WHERE id = $1", req.body.id);
+            const updatedUserResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+            const updatedUser = updatedUserResult.rows[0];
             const message = `Пользователь обновил кошелёк:\n` +
                             `Логин: ${updatedUser.login}\n` +
                             `ID: ${updatedUser.id}\n` +
@@ -113,35 +117,37 @@ app.post('/update-wallet', async (req, res) => {
         console.error('Error in /update-wallet:', error);
         res.status(500).json({ error: 'Server error' });
     } finally {
-        await conn.close();
+        client.release();
     }
 });
 
 app.get('/users', async (req, res) => {
-    const conn = await get_db_connection();
+    const client = await pool.connect();
     try {
-        const users = await conn.fetch("SELECT * FROM users");
-        res.json(users);
+        const usersResult = await client.query("SELECT * FROM users");
+        res.json(usersResult.rows);
     } catch (error) {
         console.error('Error in /users:', error);
         res.status(500).json({ error: 'Server error' });
     } finally {
-        await conn.close();
+        client.release();
     }
 });
 
 app.post('/update-user', async (req, res) => {
     console.log('Received user update request:', req.body);
-    const conn = await get_db_connection();
+    const client = await pool.connect();
     try {
-        const user = await conn.fetchrow("SELECT * FROM users WHERE id = $1", req.body.id);
+        const userResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+        const user = userResult.rows[0];
         if (user) {
             const fields = Object.keys(req.body).filter(key => key !== 'id');
             const updates = fields.map((field, index) => `${field} = $${index + 2}`).join(', ');
             const values = fields.map(field => req.body[field]);
-            await conn.execute(`UPDATE users SET ${updates} WHERE id = $1`, req.body.id, ...values);
+            await client.query(`UPDATE users SET ${updates} WHERE id = $1`, [req.body.id, ...values]);
 
-            const updatedUser = await conn.fetchrow("SELECT * FROM users WHERE id = $1", req.body.id);
+            const updatedUserResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+            const updatedUser = updatedUserResult.rows[0];
             const message = `Пользователь обновил данные:\n` +
                             `Логин: ${updatedUser.login}\n` +
                             `ID: ${updatedUser.id}\n` +
@@ -156,7 +162,7 @@ app.post('/update-user', async (req, res) => {
         console.error('Error in /update-user:', error);
         res.status(500).json({ error: 'Server error' });
     } finally {
-        await conn.close();
+        client.release();
     }
 });
 
