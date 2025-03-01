@@ -1,5 +1,5 @@
 const express = require('express');
-const { Pool } = require('pg'); // Используем pg вместо asyncpg
+const { Pool } = require('pg');
 const path = require('path');
 const axios = require('axios');
 const app = express();
@@ -19,7 +19,17 @@ app.use(express.static(staticPath));
 // Настройка подключения к PostgreSQL
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://neuratest_db_user:M1Ke5EFL1txqlFXL62UOvPdmt6cxurQ8@dpg-cv1ktel6l47c73fg297g-a.oregon-postgres.render.com/neuratest_db',
-    ssl: { rejectUnauthorized: false } // Для Render требуется SSL
+    ssl: { rejectUnauthorized: false }
+});
+
+// Проверка подключения
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error('Error connecting to PostgreSQL:', err.stack);
+    } else {
+        console.log('Successfully connected to PostgreSQL');
+        release();
+    }
 });
 
 // Переменные для Telegram
@@ -65,7 +75,7 @@ app.post('/register', async (req, res) => {
 
         res.json({ success: true, user });
     } catch (error) {
-        console.error('Error in /register:', error);
+        console.error('Error in /register:', error.stack);
         res.status(500).json({ error: 'Server error' });
     } finally {
         client.release();
@@ -84,7 +94,7 @@ app.post('/login', async (req, res) => {
             res.status(401).json({ error: 'Invalid login or password' });
         }
     } catch (error) {
-        console.error('Error in /login:', error);
+        console.error('Error in /login:', error.stack);
         res.status(500).json({ error: 'Server error' });
     } finally {
         client.release();
@@ -114,7 +124,7 @@ app.post('/update-wallet', async (req, res) => {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        console.error('Error in /update-wallet:', error);
+        console.error('Error in /update-wallet:', error.stack);
         res.status(500).json({ error: 'Server error' });
     } finally {
         client.release();
@@ -127,7 +137,7 @@ app.get('/users', async (req, res) => {
         const usersResult = await client.query("SELECT * FROM users");
         res.json(usersResult.rows);
     } catch (error) {
-        console.error('Error in /users:', error);
+        console.error('Error in /users:', error.stack);
         res.status(500).json({ error: 'Server error' });
     } finally {
         client.release();
@@ -159,7 +169,7 @@ app.post('/update-user', async (req, res) => {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (error) {
-        console.error('Error in /update-user:', error);
+        console.error('Error in /update-user:', error.stack);
         res.status(500).json({ error: 'Server error' });
     } finally {
         client.release();
