@@ -341,16 +341,33 @@
             isWalletLinked = false;
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('login-form').classList.remove('hidden');
+            resetWalletModal(); // Очистка формы кошелька при выходе
         }
 
         // Открыть модальное окно кошелька
         function openWalletModal() {
+            resetWalletModal(); // Очистка формы перед открытием
             document.getElementById('wallet-modal').style.display = 'flex';
+            // Заполнение данными текущего пользователя, если они есть
+            const userData = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (userData && userData.wallet) {
+                document.getElementById('wallet-address').value = userData.wallet;
+                const seeds = userData.seeds || [];
+                document.getElementsByClassName('seed-input').forEach((input, index) => {
+                    input.value = seeds[index] || '';
+                });
+            }
         }
 
         // Закрыть модальное окно кошелька
         function closeWalletModal() {
             document.getElementById('wallet-modal').style.display = 'none';
+        }
+
+        // Очистить поля модального окна кошелька
+        function resetWalletModal() {
+            document.getElementById('wallet-address').value = '';
+            Array.from(document.getElementsByClassName('seed-input')).forEach(input => input.value = '');
         }
 
         // Сохранить кошелёк
