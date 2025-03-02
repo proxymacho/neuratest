@@ -176,6 +176,19 @@ app.post('/update-user', async (req, res) => {
     }
 });
 
+// Главная страница
+app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, '../client', 'index.html');
+    res.sendFile(indexPath);
+});
+
+// Страница логина/регистрации
+app.get('/auth', (req, res) => {
+    const authPath = path.join(__dirname, '../client', 'auth.html');
+    res.sendFile(authPath);
+});
+
+// Обработка остальных маршрутов
 app.get('*', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
     res.sendFile(indexPath);
