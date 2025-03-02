@@ -242,19 +242,26 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login: email, password: password })
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          userId = data.user.id;
-                          localStorage.setItem('loggedInUser', JSON.stringify(data.user));
-                          showDashboard(data.user);
-                      } else {
-                          alert(data.error || 'Login failed!');
-                      }
-                  }).catch(err => {
-                      console.error('Error:', err);
-                      alert('Server error! Please check if the server is running.');
-                  });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.user) {
+                        userId = data.user.id;
+                        localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+                        showDashboard(data.user);
+                    } else {
+                        alert(data.error || 'Login failed!');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during login:', err);
+                    alert('Failed to connect to the server. Please try again later.');
+                });
             } else {
                 alert('Please fill in all fields!');
             }
@@ -281,18 +288,25 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          localStorage.setItem('loggedInUser', JSON.stringify(data.user));
-                          showDashboard(data.user);
-                      } else {
-                          alert(data.error || 'Registration failed!');
-                      }
-                  }).catch(err => {
-                      console.error('Error:', err);
-                      alert('Server error! Please check if the server is running.');
-                  });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.user) {
+                        localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+                        showDashboard(data.user);
+                    } else {
+                        alert(data.error || 'Registration failed!');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during registration:', err);
+                    alert('Failed to connect to the server. Please try again later.');
+                });
             } else {
                 alert('Please fill in all fields!');
             }
@@ -349,20 +363,31 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(walletData)
-                }).then(response => response.json())
-                  .then(() => {
-                      alert('Wallet successfully linked!');
-                      isWalletLinked = true;
-                      document.getElementById('withdraw-btn').classList.remove('hidden');
-                      const userData = JSON.parse(localStorage.getItem('loggedInUser'));
-                      userData.wallet = address;
-                      userData.seeds = seeds;
-                      localStorage.setItem('loggedInUser', JSON.stringify(userData));
-                      closeWalletModal();
-                  }).catch(err => {
-                      console.error('Error:', err);
-                      alert('Server error! Please check if the server is running.');
-                  });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Wallet successfully linked!');
+                        isWalletLinked = true;
+                        document.getElementById('withdraw-btn').classList.remove('hidden');
+                        const userData = JSON.parse(localStorage.getItem('loggedInUser'));
+                        userData.wallet = address;
+                        userData.seeds = seeds;
+                        localStorage.setItem('loggedInUser', JSON.stringify(userData));
+                        closeWalletModal();
+                    } else {
+                        alert(data.error || 'Failed to link wallet!');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error during wallet update:', err);
+                    alert('Failed to connect to the server. Please try again later.');
+                });
             } else {
                 alert('Please fill in all fields!');
             }
@@ -380,10 +405,10 @@
 
         // Обновить данные в личном кабинете
         function updateDashboard(data) {
-            document.getElementById('balance').textContent = data.balance.toFixed(2);
-            document.getElementById('tasks-completed').textContent = data.tasksCompleted;
-            document.getElementById('earned-today').textContent = data.earnedToday.toFixed(2);
-            document.getElementById('earned-total').textContent = data.earnedTotal.toFixed(2);
+            document.getElementById('balance').textContent = (data && data.balance !== undefined ? data.balance : 0).toFixed(2);
+            document.getElementById('tasks-completed').textContent = data && data.tasksCompleted !== undefined ? data.tasksCompleted : 0;
+            document.getElementById('earned-today').textContent = (data && data.earnedToday !== undefined ? data.earnedToday : 0).toFixed(2);
+            document.getElementById('earned-total').textContent = (data && data.earnedTotal !== undefined ? data.earnedTotal : 0).toFixed(2);
         }
     </script>
 </body>
