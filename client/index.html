@@ -44,6 +44,7 @@
             transition: transform 0.3s, box-shadow 0.3s;
             text-decoration: none;
             display: inline-block;
+            margin: 10px;
         }
         .btn:hover {
             transform: translateY(-5px);
@@ -92,6 +93,59 @@
             font-size: 14px;
             color: #a0a0a0;
         }
+        /* Стили для модального окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 35px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #1e3c72;
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+        }
+        .modal-content h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            margin-top: 0;
+            color: #00d4ff;
+        }
+        .modal-content h4 {
+            font-size: 20px;
+            margin: 20px 0 10px;
+            color: #1e3c72;
+        }
+        .modal-content p {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #1e3c72;
+        }
+        .modal-content .close-btn {
+            background: #ccc;
+            color: #1e3c72;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .modal-content .close-btn:hover {
+            background: #bbb;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +153,7 @@
         <h1>NeuraNest</h1>
         <p>Empowering the Future with Cutting-Edge Neural Networks</p>
         <a href="/auth" class="btn">Login / Register</a>
+        <button class="btn" onclick="openVacanciesModal()">Vacancies</button>
     </header>
 
     <div class="section">
@@ -120,14 +175,44 @@
     <div class="section">
         <h2>Contact Us</h2>
         <div class="contact-info">
-            <p>Email: <a href="nestneura@gmail.com">nestneura@gmail.com</a></p>
+            <p>Email: <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a></p>
             <p>Phone: +62 (036) 175-5015</p>
             <p>Address: Gg. Kyai Gede No. 878, Surakarta 12517, MalUt</p>
         </div>
     </div>
 
+    <!-- Модальное окно для вакансий -->
+    <div id="vacancies-modal" class="modal">
+        <div class="modal-content">
+            <h3>Join NeuraNest</h3>
+            <p>We’re always looking for talented individuals to join our mission of advancing AI technology. Check out our open positions below:</p>
+            <h4>AI Research Scientist</h4>
+            <p><strong>Location:</strong> Remote / Surakarta, MalUt</p>
+            <p><strong>Requirements:</strong> PhD in AI/ML, 3+ years of experience in neural network development, proficiency in Python and TensorFlow.</p>
+            <p><strong>Description:</strong> Lead research and development of cutting-edge neural network architectures.</p>
+            <h4>Software Engineer</h4>
+            <p><strong>Location:</strong> Remote</p>
+            <p><strong>Requirements:</strong> BS in Computer Science, 5+ years of experience, strong skills in JavaScript and Node.js.</p>
+            <p><strong>Description:</strong> Build scalable systems to deploy our AI solutions.</p>
+            <p>Interested? Send your resume to <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a>.</p>
+            <button class="close-btn" onclick="closeVacanciesModal()">Close</button>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2025 NeuraNest. All rights reserved.</p>
+        <p>© 2025 NeuraNest. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Открытие модального окна вакансий
+        function openVacanciesModal() {
+            document.getElementById('vacancies-modal').style.display = 'flex';
+        }
+
+        // Закрытие модального окна вакансий
+        function closeVacanciesModal() {
+            document.getElementById('vacancies-modal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
