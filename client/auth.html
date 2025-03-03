@@ -25,6 +25,7 @@
             width: 480px;
             text-align: center;
             color: #1e3c72;
+            position: relative;
         }
         .hidden {
             display: none;
@@ -108,11 +109,29 @@
             text-decoration: underline;
             margin-top: 10px;
         }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            padding: 8px 20px;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 <body>
     <!-- Форма логина -->
     <div id="login-form" class="container">
+        <a href="/" class="back-btn">Back to Home</a>
         <div class="logo">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
@@ -136,6 +155,7 @@
 
     <!-- Форма регистрации -->
     <div id="register-form" class="container hidden">
+        <a href="/" class="back-btn">Back to Home</a>
         <div class="logo">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
@@ -159,6 +179,7 @@
 
     <!-- Личный кабинет -->
     <div id="dashboard" class="container hidden">
+        <a href="/" class="back-btn">Back to Home</a>
         <div class="logo">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="30" cy="30" r="25" stroke="url(#grad1)" stroke-width="5" fill="none"/>
