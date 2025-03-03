@@ -50,6 +50,23 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
         }
+        .auth-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            padding: 8px 20px;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .auth-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
         .section {
             padding: 60px 20px;
             text-align: center;
@@ -146,13 +163,48 @@
         .modal-content .close-btn:hover {
             background: #bbb;
         }
+        /* Стили для формы */
+        .modal-content form {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .modal-content label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+            color: #1e3c72;
+        }
+        .modal-content input[type="text"],
+        .modal-content input[type="email"],
+        .modal-content input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .modal-content input[type="submit"] {
+            background: linear-gradient(90deg, #1e3c72, #00d4ff);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .modal-content input[type="submit"]:hover {
+            background: linear-gradient(90deg, #00d4ff, #1e3c72);
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>NeuraNest</h1>
         <p>Empowering the Future with Cutting-Edge Neural Networks</p>
-        <a href="/auth" class="btn">Login / Register</a>
+        <a href="/auth" class="auth-btn">Login / Register</a>
         <button class="btn" onclick="openVacanciesModal()">Vacancies</button>
     </header>
 
@@ -194,7 +246,16 @@
             <p><strong>Location:</strong> Remote</p>
             <p><strong>Requirements:</strong> BS in Computer Science, 5+ years of experience, strong skills in JavaScript and Node.js.</p>
             <p><strong>Description:</strong> Build scalable systems to deploy our AI solutions.</p>
-            <p>Interested? Send your resume to <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a>.</p>
+            <p>Interested? Apply below or send your resume to <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a>.</p>
+            <form id="apply-form" onsubmit="submitApplication(event)">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="resume">Upload Resume (PDF):</label>
+                <input type="file" id="resume" name="resume" accept=".pdf" required>
+                <input type="submit" value="Submit Application">
+            </form>
             <button class="close-btn" onclick="closeVacanciesModal()">Close</button>
         </div>
     </div>
@@ -212,6 +273,14 @@
         // Закрытие модального окна вакансий
         function closeVacanciesModal() {
             document.getElementById('vacancies-modal').style.display = 'none';
+            document.getElementById('apply-form').reset(); // Очистка формы при закрытии
+        }
+
+        // Обработка отправки формы (пока только визуально)
+        function submitApplication(event) {
+            event.preventDefault();
+            alert('Thank you for your application! We will review it soon.');
+            closeVacanciesModal();
         }
     </script>
 </body>
