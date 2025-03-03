@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=" viewport" content="width=device-width, initial-scale=1.0">
     <title>NeuraNest - Empowering the Future with Neural Networks</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
     <style>
@@ -261,6 +261,10 @@
                 <input type="text" id="name" name="name" required>
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" required placeholder="+1234567890">
+                <label for="telegram">Telegram Account:</label>
+                <input type="text" id="telegram" name="telegram" required placeholder="@username">
                 <label for="age">Age:</label>
                 <input type="number" id="age" name="age" min="16" max="100" required>
                 <label for="country">Country of Residence:</label>
@@ -296,6 +300,8 @@
             const formData = {
                 name: form.name.value,
                 email: form.email.value,
+                phone: form.phone.value,
+                telegram: form.telegram.value,
                 age: form.age.value,
                 country: form.country.value,
                 details: form.details.value

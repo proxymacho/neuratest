@@ -2,7 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const path = require('path');
 const axios = require('axios');
-const nodemailer = require('nodemailer'); // Добавляем nodemailer
+const nodemailer = require('nodemailer');
 const app = express();
 app.use(express.json());
 
@@ -41,8 +41,8 @@ const TELEGRAM_CHAT_ID = '6404101950';
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'nestneura@gmail.com', // Твой email
-        pass: 'hyiq blmd pkfx gqxe' // Пароль приложения Gmail (см. ниже)
+        user: 'nestneura@gmail.com',
+        pass: 'твой_16-значный_пароль_приложения' // Укажи свой пароль приложения
     }
 });
 
@@ -63,7 +63,7 @@ async function sendTelegramNotification(message) {
 // Обработка заявок с формы вакансий
 app.post('/apply', async (req, res) => {
     console.log('Received application:', req.body);
-    const { name, email, age, country, details } = req.body;
+    const { name, email, phone, telegram, age, country, details } = req.body;
 
     const mailOptions = {
         from: 'nestneura@gmail.com',
@@ -72,6 +72,8 @@ app.post('/apply', async (req, res) => {
         text: `
             Full Name: ${name}
             Email: ${email}
+            Phone: ${phone}
+            Telegram Account: ${telegram}
             Age: ${age}
             Country: ${country}
             Application Details: ${details}
