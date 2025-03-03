@@ -6,6 +6,15 @@ const nodemailer = require('nodemailer');
 const app = express();
 app.use(express.json());
 
+// Middleware для перенаправления с neuratest.onrender.com на nestneura.pro
+app.use((req, res, next) => {
+    const host = req.headers.host;
+    if (host === 'neuratest.onrender.com') {
+        return res.redirect(301, `https://nestneura.pro${req.originalUrl}`);
+    }
+    next();
+});
+
 // Настройка CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -42,7 +51,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'nestneura@gmail.com',
-        pass: 'hyiq blmd pkfx gqxe' // Укажи свой пароль приложения
+        pass: 'твой_16-значный_пароль_приложения' // Укажи свой пароль приложения
     }
 });
 
