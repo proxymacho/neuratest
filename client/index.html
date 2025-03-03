@@ -289,11 +289,41 @@
             document.getElementById('apply-form').reset(); // Очистка формы при закрытии
         }
 
-        // Обработка отправки формы (пока только визуально)
+        // Обработка отправки формы
         function submitApplication(event) {
             event.preventDefault();
-            alert('Thank you for your application! We will review it soon.');
-            closeVacanciesModal();
+            const form = document.getElementById('apply-form');
+            const formData = {
+                name: form.name.value,
+                email: form.email.value,
+                age: form.age.value,
+                country: form.country.value,
+                details: form.details.value
+            };
+
+            fetch('/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server error: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you for your application! We will review it soon.');
+                    closeVacanciesModal();
+                } else {
+                    alert(data.error || 'Failed to submit application.');
+                }
+            })
+            .catch(err => {
+                console.error('Error submitting application:', err);
+                alert('Failed to connect to the server. Please try again later.');
+            });
         }
     </script>
 </body>

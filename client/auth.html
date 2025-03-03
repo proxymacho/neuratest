@@ -113,18 +113,19 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #e0e0e0;
+            background: linear-gradient(90deg, #1e3c72, #00d4ff);
+            color: white;
             padding: 8px 20px;
-            border: 1px solid #00d4ff;
+            border: none;
             border-radius: 5px;
             font-size: 14px;
-            font-weight: 400;
+            font-weight: 700;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
         }
     </style>
 </head>

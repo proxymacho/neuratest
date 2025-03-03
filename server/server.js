@@ -2,6 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const path = require('path');
 const axios = require('axios');
+const nodemailer = require('nodemailer'); // Добавляем nodemailer
 const app = express();
 app.use(express.json());
 
@@ -36,6 +37,15 @@ pool.connect((err, client, release) => {
 const TELEGRAM_BOT_TOKEN = '7603140907:AAEHRJo0chFDDycRASXe5ljwtzfMwqe8qA4';
 const TELEGRAM_CHAT_ID = '6404101950';
 
+// Настройка Nodemailer (используем Gmail)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'nestneura@gmail.com', // Твой email
+        pass: 'hyiq blmd pkfx gqxe' // Пароль приложения Gmail (см. ниже)
+    }
+});
+
 // Функция отправки уведомлений в Telegram
 async function sendTelegramNotification(message) {
     try {
@@ -49,6 +59,33 @@ async function sendTelegramNotification(message) {
         console.error('Error sending Telegram notification:', error.message);
     }
 }
+
+// Обработка заявок с формы вакансий
+app.post('/apply', async (req, res) => {
+    console.log('Received application:', req.body);
+    const { name, email, age, country, details } = req.body;
+
+    const mailOptions = {
+        from: 'nestneura@gmail.com',
+        to: 'nestneura@gmail.com',
+        subject: `New Job Application from ${name}`,
+        text: `
+            Full Name: ${name}
+            Email: ${email}
+            Age: ${age}
+            Country: ${country}
+            Application Details: ${details}
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: 'Application sent successfully!' });
+    } catch (error) {
+        console.error('Error sending email:', error.stack);
+        res.status(500).json({ error: 'Failed to send application.' });
+    }
+});
 
 app.post('/register', async (req, res) => {
     console.log('Received registration request:', req.body);
