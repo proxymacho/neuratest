@@ -176,7 +176,8 @@
         }
         .modal-content input[type="text"],
         .modal-content input[type="email"],
-        .modal-content input[type="file"] {
+        .modal-content input[type="number"],
+        .modal-content textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -184,6 +185,10 @@
             border-radius: 5px;
             font-size: 14px;
             box-sizing: border-box;
+        }
+        .modal-content textarea {
+            height: 120px;
+            resize: vertical;
         }
         .modal-content input[type="submit"] {
             background: linear-gradient(90deg, #1e3c72, #00d4ff);
@@ -252,8 +257,12 @@
                 <input type="text" id="name" name="name" required>
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
-                <label for="resume">Upload Resume (PDF):</label>
-                <input type="file" id="resume" name="resume" accept=".pdf" required>
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" min="16" max="100" required>
+                <label for="country">Country of Residence:</label>
+                <input type="text" id="country" name="country" required>
+                <label for="details">Application Details (desired position, experience, etc.):</label>
+                <textarea id="details" name="details" required placeholder="Tell us about the position you’re applying for, your experience, and why you want to join NeuraNest."></textarea>
                 <input type="submit" value="Submit Application">
             </form>
             <button class="close-btn" onclick="closeVacanciesModal()">Close</button>
