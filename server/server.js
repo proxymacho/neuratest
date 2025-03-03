@@ -51,7 +51,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'nestneura@gmail.com',
-        pass: 'твой_16-значный_пароль_приложения' // Укажи свой пароль приложения
+        pass: 'hyiq blmd pkfx gqxe' // Укажи свой пароль приложения
     }
 });
 
