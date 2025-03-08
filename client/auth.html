@@ -435,10 +435,10 @@
             const balance = parseFloat(userData.balance) || 0;
             const modalContent = document.getElementById('withdraw-modal-content');
             
-            if (balance < 5000) {
+            if (balance < 3000) {
                 modalContent.innerHTML = `
                     <h3>Withdraw Funds</h3>
-                    <p>Withdrawal is unavailable. The minimum withdrawal amount is 5000 USD.</p>
+                    <p>Withdrawal is unavailable. The minimum withdrawal amount is 3000 USD.</p>
                     <button style="margin-top: 25px; background: #ccc;" onclick="closeWithdrawModal()">Close</button>
                 `;
             } else {
