@@ -224,6 +224,26 @@ app.post('/update-user', async (req, res) => {
     }
 });
 
+// Новый маршрут для получения данных пользователя
+app.post('/get-user-data', async (req, res) => {
+    console.log('Received get-user-data request:', req.body);
+    const client = await pool.connect();
+    try {
+        const userResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+        const user = userResult.rows[0];
+        if (user) {
+            res.status(200).json({ success: true, user });
+        } else {
+            res.status(404).json({ success: false, error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error in /get-user-data:', error.stack);
+        res.status(500).json({ success: false, error: 'Server error' });
+    } finally {
+        client.release();
+    }
+});
+
 // Главная страница
 app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
