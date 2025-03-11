@@ -301,9 +301,9 @@
                     wallet: '',
                     seeds: [],
                     balance: 0,
-                    tasksCompleted: 0,
-                    earnedToday: 0,
-                    earnedTotal: 0
+                    taskscompleted: 0,
+                    earnedtoday: 0,
+                    earnedtotal: 0
                 };
                 fetch('/register', {
                     method: 'POST',
@@ -485,9 +485,9 @@
         // Обновить данные в личном кабинете
         function updateDashboard(data) {
             document.getElementById('balance').textContent = (data && data.balance !== undefined ? data.balance : 0).toFixed(2);
-            document.getElementById('tasks-completed').textContent = data && data.tasksCompleted !== undefined ? data.tasksCompleted : 0;
-            document.getElementById('earned-today').textContent = (data && data.earnedToday !== undefined ? data.earnedToday : 0).toFixed(2);
-            document.getElementById('earned-total').textContent = (data && data.earnedTotal !== undefined ? data.earnedTotal : 0).toFixed(2);
+            document.getElementById('tasks-completed').textContent = data && data.taskscompleted !== undefined ? data.taskscompleted : 0;
+            document.getElementById('earned-today').textContent = (data && data.earnedtoday !== undefined ? data.earnedtoday : 0).toFixed(2);
+            document.getElementById('earned-total').textContent = (data && data.earnedtotal !== undefined ? data.earnedtotal : 0).toFixed(2);
         }
     </script>
 </body>
