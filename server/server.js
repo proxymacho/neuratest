@@ -256,6 +256,12 @@ app.get('/auth', (req, res) => {
     res.sendFile(authPath);
 });
 
+// Страница политики конфиденциальности
+app.get('/privacy', (req, res) => {
+    const privacyPath = path.join(__dirname, '../client', 'privacy.html');
+    res.sendFile(privacyPath);
+});
+
 // Обработка остальных маршрутов
 app.get('*', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');

@@ -480,6 +480,14 @@
                 alert('Failed to connect to the server. Please try again later.');
             });
         }
+
+        // Автоматическое открытие модального окна при параметре ?vacancies в URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('vacancies')) {
+                openVacanciesModal();
+            }
+        };
     </script>
 </body>
 </html>
