@@ -34,6 +34,20 @@
         a:hover {
             text-decoration: underline;
         }
+        .back-btn {
+            background: linear-gradient(90deg, #1e3c72, #00d4ff);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .back-btn:hover {
+            background: linear-gradient(90deg, #00d4ff, #1e3c72);
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body>
@@ -78,6 +92,8 @@
         
         <h2>Contact Us</h2>
         <p>If you have questions, email us at <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a>.</p>
+
+        <button class="back-btn" onclick="location.href='/'">Back to Home</button>
     </div>
 </body>
 </html>
