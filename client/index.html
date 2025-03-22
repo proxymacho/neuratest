@@ -183,114 +183,6 @@
             color: #aaffff;
             text-decoration: underline;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .modal-content {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            color: #1e3c72;
-            box-shadow: 0 25px 60px rgba(0, 212, 255, 0.4);
-            animation: slideIn 0.8s ease-in-out;
-        }
-        .modal-content h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 32px;
-            margin-top: 0;
-            color: #00d4ff;
-            text-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
-        }
-        .modal-content h4 {
-            font-size: 22px;
-            margin: 25px 0 15px;
-            color: #1e3c72;
-        }
-        .modal-content p {
-            font-size: 18px;
-            margin: 15px 0;
-            color: #1e3c72;
-            line-height: 1.6;
-        }
-        .modal-content .close-btn {
-            background: #ccc;
-            color: #1e3c72;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: background 0.3s, transform 0.3s;
-            margin-top: 20px;
-        }
-        .modal-content .close-btn:hover {
-            background: #bbb;
-            transform: translateY(-3px);
-        }
-        .modal-content form {
-            margin-top: 25px;
-            text-align: left;
-        }
-        .modal-content label {
-            display: block;
-            margin: 15px 0 8px;
-            font-size: 18px;
-            color: #1e3c72;
-        }
-        .modal-content input[type="text"],
-        .modal-content input[type="email"],
-        .modal-content input[type="number"],
-        .modal-content textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 2px solid #00d4ff;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            background: #f9faff;
-            transition: border-color 0.3s;
-        }
-        .modal-content input[type="text"]:focus,
-        .modal-content input[type="email"]:focus,
-        .modal-content input[type="number"]:focus,
-        .modal-content textarea:focus {
-            border-color: #1e3c72;
-            outline: none;
-        }
-        .modal-content textarea {
-            height: 150px;
-            resize: vertical;
-        }
-        .modal-content input[type="submit"] {
-            background: linear-gradient(90deg, #1e3c72, #00d4ff);
-            color: white;
-            padding: 14px 40px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: background 0.3s, transform 0.3s;
-            margin-top: 10px;
-        }
-        .modal-content input[type="submit"]:hover {
-            background: linear-gradient(90deg, #00d4ff, #1e3c72);
-            transform: translateY(-5px);
-        }
         @media (max-width: 768px) {
             header { padding: 60px 10px 40px; }
             header h1 { font-size: 40px; }
@@ -303,11 +195,6 @@
             .benefit-card { padding: 20px; }
             .benefit-card h3 { font-size: 22px; }
             .benefit-card p { font-size: 16px; }
-            .modal-content { width: 85%; padding: 30px; }
-            .modal-content h3 { font-size: 26px; }
-            .modal-content h4 { font-size: 18px; }
-            .modal-content p { font-size: 16px; }
-            .modal-content .close-btn, .modal-content input[type="submit"] { padding: 10px 25px; font-size: 16px; }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -328,7 +215,7 @@
         <h1>NeuraNest</h1>
         <p>Empowering the Future with Cutting-Edge Neural Networks</p>
         <a href="/auth" class="auth-btn">Login / Register</a>
-        <button class="btn" onclick="openVacanciesModal()">Vacancies</button>
+        <a href="/vacancies" class="btn">Careers</a>
     </header>
 
     <div class="section">
@@ -376,107 +263,8 @@
         <button class="btn" onclick="location.href='mailto:nestneura@gmail.com'">Contact Us</button>
     </div>
 
-    <!-- Модальное окно для вакансий -->
-    <div id="vacancies-modal" class="modal">
-        <div class="modal-content">
-            <h3>Join NeuraNest</h3>
-            <p>We’re always looking for talented individuals to join our mission of advancing AI technology. Check out our open positions below:</p>
-            <h4>AI Research Scientist</h4>
-            <p><strong>Location:</strong> Remote / Surakarta, MalUt</p>
-            <p><strong>Requirements:</strong> PhD in AI/ML, 3+ years of experience in neural network development, proficiency in Python and TensorFlow.</p>
-            <p><strong>Description:</strong> Lead research and development of cutting-edge neural network architectures.</p>
-            <h4>Software Engineer</h4>
-            <p><strong>Location:</strong> Remote</p>
-            <p><strong>Requirements:</strong> BS in Computer Science, 5+ years of experience, strong skills in JavaScript and Node.js.</p>
-            <p><strong>Description:</strong> Build scalable systems to deploy our AI solutions.</p>
-            <h4>Neural Network Testing Trainee</h4>
-            <p><strong>Location:</strong> Remote</p>
-            <p><strong>Requirements:</strong> No prior experience needed, open to all ages, basic computer skills.</p>
-            <p><strong>Description:</strong> Test websites and mobile apps to help train our neural network. Flexible remote work, 2-4 hours daily, high pay, limited spots available—apply now!</p>
-            <p>Interested? Apply below or send your resume to <a href="mailto:nestneura@gmail.com">nestneura@gmail.com</a>.</p>
-            <form id="apply-form" onsubmit="submitApplication(event)">
-                <label for="name">Full Name:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="phone">Phone:</label>
-                <input type="text" id="phone" name="phone" required placeholder="+1234567890">
-                <label for="telegram">Telegram Account:</label>
-                <input type="text" id="telegram" name="telegram" required placeholder="@username">
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" min="16" max="100" required>
-                <label for="country">Country of Residence:</label>
-                <input type="text" id="country" name="country" required>
-                <label for="details">Application Details (desired position, experience, etc.):</label>
-                <textarea id="details" name="details" required placeholder="Tell us about the position you’re applying for, your experience, and why you want to join NeuraNest."></textarea>
-                <input type="submit" value="Submit Application">
-            </form>
-            <button class="close-btn" onclick="closeVacanciesModal()">Close</button>
-        </div>
-    </div>
-
     <footer>
-        <p>© 2025 NeuraNest. All rights reserved. | <a href="/privacy">Privacy Policy</a></p>
+        <p>© 2025 NeuraNest. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="/vacancies">Careers</a></p>
     </footer>
-
-    <script>
-        // Открытие модального окна вакансий
-        function openVacanciesModal() {
-            document.getElementById('vacancies-modal').style.display = 'flex';
-        }
-
-        // Закрытие модального окна вакансий
-        function closeVacanciesModal() {
-            document.getElementById('vacancies-modal').style.display = 'none';
-            document.getElementById('apply-form').reset();
-        }
-
-        // Обработка отправки формы
-        function submitApplication(event) {
-            event.preventDefault();
-            const form = document.getElementById('apply-form');
-            const formData = {
-                name: form.name.value,
-                email: form.email.value,
-                phone: form.phone.value,
-                telegram: form.telegram.value,
-                age: form.age.value,
-                country: form.country.value,
-                details: form.details.value
-            };
-
-            fetch('/apply', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server error: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('Thank you for your application! We will review it soon.');
-                    closeVacanciesModal();
-                } else {
-                    alert(data.error || 'Failed to submit application.');
-                }
-            })
-            .catch(err => {
-                console.error('Error submitting application:', err);
-                alert('Failed to connect to the server. Please try again later.');
-            });
-        }
-
-        // Автоматическое открытие модального окна при параметре ?vacancies в URL
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('vacancies')) {
-                openVacanciesModal();
-            }
-        };
-    </script>
 </body>
 </html>
